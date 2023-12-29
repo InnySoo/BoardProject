@@ -4,6 +4,10 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { AUTH_PATH, BOARD_DETAIL_PATH, BOARD_PATH, BOARD_UPDATE_PATH, BOARD_WRITE_PATH, MAIN_PATH, SEARCH_PATH, USER_PATH } from 'constant';
 import { useCookies } from 'react-cookie';
 import { useBoardStore, useLoginUserStore } from 'stores';
+import { fileUploadRequest, postBoardRequest } from 'apis';
+import { PostBoardRequestDto } from 'apis/request/board';
+import { PostBoardResponseDto } from 'apis/response/board';
+import { ResponseDto } from 'apis/response';
 
 //          component: Header 레이아웃          //
 export default function Header() {
@@ -32,11 +36,11 @@ export default function Header() {
   const [isUserPage, setUserPage] = useState<boolean>(false);
 
   //          function: 네비게이트 함수          //
-  const navigator = useNavigate();
+  const navigate = useNavigate();
 
   //          event handler: 로고 클릭 이벤트 처리 함수          //
   const onLogoClickHandler = () => {
-    navigator(MAIN_PATH());
+    navigate(MAIN_PATH());
   }
 
   //          component: 검색 버튼 컴포넌트          //
@@ -68,7 +72,7 @@ export default function Header() {
         setStatus(!status);
         return;
       }
-      navigator(SEARCH_PATH(word));
+      navigate(SEARCH_PATH(word));
     };
 
     //          effect: 검색어 path variable 변경 될 때 마다 실행될 함수          //
@@ -108,17 +112,17 @@ export default function Header() {
     const onMyPageButtonClickHandler = () => {
       if (!loginUser) return;
       const { email } = loginUser;
-      navigator(USER_PATH(email));
+      navigate(USER_PATH(email));
     };
     //          event handler: 마이페이지 버튼 클릭 이벤트 처리 함수          //
     const onSignOutButtonClickHandler = () => {
       resetLoginUser();
       setCookies('accessToken', '', { path: MAIN_PATH(), expires: new Date() })
-      navigator(MAIN_PATH());
+      navigate(MAIN_PATH());
     };
     //          event handler: 로그인 버튼 클릭 이벤트 처리 함수          //
     const onSignInButtonClickHandler = () => {
-      navigator(AUTH_PATH());
+      navigate(AUTH_PATH());
     }
 
     //          render: 로그아웃 버튼 컴포넌트 렌더링          //
@@ -137,9 +141,40 @@ export default function Header() {
     //          state: 게시물 상태          //
     const { title, content, boardImageFileList, resetBoard } = useBoardStore();
 
-    //          event handler: 업로드 버튼 클릭 이벤트 처리 함수          //
-    const onUploadButtonClickHandler = () => {
+    //          function: post board response 처리 함수          //
+    const postBoardResponse = (responseBody: PostBoardResponseDto | ResponseDto | null) => {
+      if (!responseBody) return;
+      const { code } = responseBody;
+      if (code === 'DBE') alert('데이터베이스 오류입니다.');
+      if (code === 'AF' || code === 'NU') navigate(AUTH_PATH());
+      if (code === 'VF') alert('제목과 내용은 필수입니다.');
+      if (code !== 'SU') return;
 
+      resetBoard();
+      if (!loginUser) return;
+      const { email } = loginUser;
+      navigate(USER_PATH(email));
+    }
+
+    //          event handler: 업로드 버튼 클릭 이벤트 처리          //
+    const onUploadButtonClickHandler = async () => {
+      const accessToken = cookies.accessToken;
+      if (!accessToken) return;
+
+      const boardImageList: string[] = [];
+
+      for (const file of boardImageFileList) {
+        const data = new FormData();
+        data.append('file', file);
+
+        const url = await fileUploadRequest(data);
+        if (url) boardImageList.push(url);
+      }
+
+      const requestBody: PostBoardRequestDto = {
+        title, content, boardImageList
+      }
+      postBoardRequest(requestBody, accessToken).then(postBoardResponse);
     }
 
     //          render: 업로드 버튼 컴포넌트 렌더링          //
