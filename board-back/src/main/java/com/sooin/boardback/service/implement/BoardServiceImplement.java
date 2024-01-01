@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.sooin.boardback.dto.request.board.PostBoardRequestDto;
 import com.sooin.boardback.dto.response.ResponseDto;
 import com.sooin.boardback.dto.response.board.GetBoardResponseDto;
+import com.sooin.boardback.dto.response.board.GetFavoriteListResponseDto;
 import com.sooin.boardback.dto.response.board.PostBoardResponseDto;
 import com.sooin.boardback.dto.response.board.PutFavoriteResponseDto;
 import com.sooin.boardback.entity.BoardEntity;
@@ -19,6 +20,7 @@ import com.sooin.boardback.repository.FavoriteRepository;
 import com.sooin.boardback.repository.ImageRepository;
 import com.sooin.boardback.repository.UserRepository;
 import com.sooin.boardback.repository.resultSet.GetBoardResultSet;
+import com.sooin.boardback.repository.resultSet.GetFavoriteListResultSet;
 import com.sooin.boardback.service.BoardService;
 
 import lombok.RequiredArgsConstructor;
@@ -55,6 +57,28 @@ public class BoardServiceImplement implements BoardService {
     }
 
     return GetBoardResponseDto.success(resultSet, imageEntities);
+
+  }
+
+  
+  @Override
+  public ResponseEntity<? super GetFavoriteListResponseDto> getFavoriteList(Integer boardNumber) {
+
+    List<GetFavoriteListResultSet> resultSets = new ArrayList<>();
+
+    try {
+
+      boolean existedBoard = boardRepository.existsByBoardNumber(boardNumber);
+      if (!existedBoard) return GetFavoriteListResponseDto.noExistBoard();
+
+      resultSets = favoriteRepository.getFavoriteList(boardNumber);
+
+    } catch (Exception exception) {
+      exception.printStackTrace();
+      return ResponseDto.databaseError();
+    }
+
+    return GetFavoriteListResponseDto.success(resultSets);
 
   }
   
@@ -122,5 +146,6 @@ public class BoardServiceImplement implements BoardService {
     return PutFavoriteResponseDto.success();
 
   }
+
   
 }
