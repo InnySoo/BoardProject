@@ -27,7 +27,7 @@ const usePagination = <T>(countPerPage: number) => {
   };
   //          function: 보여줄 페이지 리스트 추출 함수          //
   const setViewPage = () => {
-    const FIRST_INDEX = 10 * (currentPage - 1);
+    const FIRST_INDEX = 10 * (currentSection - 1);
     const LAST_INDEX = totalPageList.length > 10 * currentSection ? 10 * currentSection : totalPageList.length;
     const viewPageList = totalPageList.slice(FIRST_INDEX, LAST_INDEX);
     setViewPageList(viewPageList);
