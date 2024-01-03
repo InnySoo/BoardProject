@@ -29,10 +29,10 @@ export default function Pagination(props: Props) {
     setCurrentPage((currentSection - 1) * 10);
     setCurrentSection(currentSection - 1);
   }
-  //          event handler: 페이지 클릭 이벤트 처리          //
+  //          event handler: 다음 클릭 이벤트 처리          //
   const onNextClickHandler = () => {
     if (currentSection === totalSection) return;
-    setCurrentPage((currentSection * 10) + 1);
+    setCurrentPage(currentSection * 10 + 1);
     setCurrentSection(currentSection + 1);
   }
 
