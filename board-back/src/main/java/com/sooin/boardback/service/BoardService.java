@@ -9,6 +9,7 @@ import com.sooin.boardback.dto.response.board.DeleteBoardResponseDto;
 import com.sooin.boardback.dto.response.board.GetBoardResponseDto;
 import com.sooin.boardback.dto.response.board.GetCommentListResponseDto;
 import com.sooin.boardback.dto.response.board.GetFavoriteListResponseDto;
+import com.sooin.boardback.dto.response.board.GetLatestBoardListResponseDto;
 import com.sooin.boardback.dto.response.board.IncreaseViewCountResponseDto;
 import com.sooin.boardback.dto.response.board.PatchBoardResponseDto;
 import com.sooin.boardback.dto.response.board.PostBoardResponseDto;
@@ -22,6 +23,8 @@ public interface BoardService {
   ResponseEntity<? super GetFavoriteListResponseDto> getFavoriteList(Integer boardNumber);
 
   ResponseEntity<? super GetCommentListResponseDto> getCommentList(Integer boardNumber);
+
+  ResponseEntity<? super GetLatestBoardListResponseDto> getLatestBoardList();
 
   ResponseEntity<? super PostBoardResponseDto> postBoard(PostBoardRequestDto dto, String email);
 
