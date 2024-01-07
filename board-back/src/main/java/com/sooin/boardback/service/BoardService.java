@@ -12,6 +12,7 @@ import com.sooin.boardback.dto.response.board.GetFavoriteListResponseDto;
 import com.sooin.boardback.dto.response.board.GetLatestBoardListResponseDto;
 import com.sooin.boardback.dto.response.board.GetSearchBoardListResponseDto;
 import com.sooin.boardback.dto.response.board.GetTop3BoardListResponseDto;
+import com.sooin.boardback.dto.response.board.GetUserBoardListResponseDto;
 import com.sooin.boardback.dto.response.board.IncreaseViewCountResponseDto;
 import com.sooin.boardback.dto.response.board.PatchBoardResponseDto;
 import com.sooin.boardback.dto.response.board.PostBoardResponseDto;
@@ -31,6 +32,8 @@ public interface BoardService {
   ResponseEntity<? super GetTop3BoardListResponseDto> getTop3BoardList();
 
   ResponseEntity<? super GetSearchBoardListResponseDto> getSearchBoardList(String searchWord, String preSearchWord);
+
+  ResponseEntity<? super GetUserBoardListResponseDto> getUserBoardList(String email);
 
   ResponseEntity<? super PostBoardResponseDto> postBoard(PostBoardRequestDto dto, String email);
 
