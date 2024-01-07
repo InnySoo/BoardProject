@@ -2,10 +2,12 @@ package com.sooin.boardback.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sooin.boardback.dto.response.search.GetPopularListResponseDto;
+import com.sooin.boardback.dto.response.search.GetRelationListResponseDto;
 import com.sooin.boardback.service.SearchService;
 
 import lombok.RequiredArgsConstructor;
@@ -23,4 +25,12 @@ public class SearchController {
     return response;
   }
   
+  @GetMapping("/{searchWord}/relation-list")
+  public ResponseEntity<? super GetRelationListResponseDto> getRelationList(
+    @PathVariable("searchWord") String searchWord
+  ) {
+    ResponseEntity<? super GetRelationListResponseDto> response = searchService.getRelationList(searchWord);
+    return response;
+  }
+
 }
